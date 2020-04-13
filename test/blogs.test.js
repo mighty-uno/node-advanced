@@ -17,29 +17,29 @@ afterEach(async () => {
 //   expect(label).toEqual("Blog Title");
 // });
 
-describe("When logged in", async () => {
+describe("When logged in", () => {
   beforeEach(async () => {
     await page.login();
     await page.click("a.btn-floating");
   });
 
-  test("can see blog create form ", async () => {
+  it("can see blog create form ", async () => {
     const label = await page.getContentsOf("form label");
     expect(label).toEqual("Blog Title");
   });
 
-  describe("And using valid inputs", async () => {
+  describe("And using valid inputs", () => {
     beforeEach(async () => {
       await page.type(".title input", "My title");
       await page.type(".content input", "My Content");
       await page.click("form button");
     });
-    test("Submitting takes user to review screen", async () => {
+    it("Submitting takes user to review screen", async () => {
       const text = await page.getContentsOf("h5");
       expect(text).toEqual("Please confirm your entries");
     });
 
-    test("Submitting then saving adds blog to index page", async () => {
+    it("Submitting then saving adds blog to index page", async () => {
       await page.click("button.green");
       await page.waitFor(".card");
       const title = await page.getContentsOf(".card-title");
@@ -49,12 +49,12 @@ describe("When logged in", async () => {
     });
   });
 
-  describe("And using invalid inputs", async () => {
+  describe("And using invalid inputs", () => {
     beforeEach(async () => {
       await page.click("form button");
     });
 
-    test("the form shows the error msg", async () => {
+    it("the form shows the error msg", async () => {
       const titleError = await page.getContentsOf(".title .red-text");
       const contentError = await page.getContentsOf(".content .red-text");
       expect(titleError).toEqual("You must provide a value");
@@ -63,8 +63,8 @@ describe("When logged in", async () => {
   });
 });
 
-describe("User is not logged in", async () => {
-  test("User can not create a blog", async () => {
+describe("User is not logged in", () => {
+  it("User can not create a blog", async () => {
     const result = await page.evaluate(() => {
       return fetch("/api/blogs", {
         method: "POST",
@@ -79,7 +79,7 @@ describe("User is not logged in", async () => {
     expect(result).toEqual({ error: "You must log in!" });
   });
 
-  test("User can not retrieve a blog", async () => {
+  it("User can not retrieve a blog", async () => {
     const result = await page.evaluate(() => {
       return fetch("/api/blogs", {
         method: "GET",
